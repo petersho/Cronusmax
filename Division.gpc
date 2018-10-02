@@ -100,6 +100,7 @@ int stable_duration = 1000;
 int stable_end = 2500;
 int stable_factor = 100;
 int auto_rapid = 0;
+int rapid_delay = 0;
 
 int gun_selete = 0;
 
@@ -120,14 +121,14 @@ function gun_two()
 
 function anti_recoil_testing()
 {
-	//MP5-ST
-	stable_vertical = 8;
-	stable_adj = 4;
-	stable_left = 1;
-	stable_right = 1;
-	stable_duration = 400;
+	//First Wave M1A  m1a_1st
+	stable_vertical = 27;
+	stable_adj = 0;
+	stable_left = 10;
+	stable_right = 0;
+	stable_duration = 50;
 	stable_factor = 100;
-	stable_end = 3500;
+	stable_end = 50;
 	auto_rapid = 0;
 	
 	return 0;
@@ -144,9 +145,9 @@ main {
 						shift_mul++;
 			}
 			if (get_ptime(PS4_R2) < stable_end) {
-				if (auto_rapid)
+				if (auto_rapid) {
 					combo_run(rapid_fire);
-
+				}
 				combo_run(anti_recoil);
 				combo_stop(auto_run);
 			}
@@ -200,9 +201,10 @@ function anti_recoil_pp19()
 	stable_left = 1;
 	stable_right = 1;
 	stable_duration = 2000;
-	stable_factor = 100;
 	stable_end = 4200;
+	stable_factor = 100;
 	auto_rapid = 0;
+	rapid_delay = 0;
 	
 	return 0;
 }
@@ -217,6 +219,7 @@ function anti_recoil_mp5n()
 	stable_end = 2500;
 	stable_factor = 100;
 	auto_rapid = 0;
+	rapid_delay = 0;
 	
 	return 0;
 }
@@ -248,6 +251,7 @@ function anti_recoil_ak47()
 	stable_factor = 100;
 	auto_rapid = 0;
 	stable_end = 2500;
+	rapid_delay = 0;
 	
 	return 0;
 }
@@ -263,6 +267,7 @@ function anti_recoil_acr()
 	stable_end = 2200;
 	stable_factor = 100;
 	auto_rapid = 0;
+	rapid_delay = 0;
 	
 	return 0;
 }
@@ -281,9 +286,30 @@ function anti_recoil_super90()
 	stable_end = 3000;
 	stable_factor = 100;
 	auto_rapid = 1;
+	rapid_delay = 0;
 	
 	return 0;
 }
+
+/*****************************
+ * Marksman Rifle
+ *****************************/
+function anti_recoil_m1a_1st()
+{
+	//First Wave M1A  m1a_1st
+	stable_vertical = 10;
+	stable_adj = 8;
+	stable_left = 1;
+	stable_right = 0;
+	stable_duration = 1000;
+	stable_factor = 100;
+	stable_end = 3000;
+	auto_rapid = 1;
+	rapid_delay = 250;
+	
+	return 0;
+}
+
 
 /*******************************
  * Combo Section
@@ -343,7 +369,7 @@ combo rapid_fire
 	set_val(PS4_R2, 0);
 	wait(30);
 	
-
+	wait(rapid_delay);
 }
 
 int aim_assist_rx = 0;
