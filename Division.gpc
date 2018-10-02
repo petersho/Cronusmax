@@ -1,10 +1,54 @@
-/* *
-* GPC SCRIPT
-*
-*  GPC is a scripting language with C-like syntax.
-*  To learn more access GPC Language Reference on Help menu.
-* *********************************************************** */
+/*******************************************************
+This GPC based on setting by below
 
+Layout Name: Division
+----------------------------------------------------
+Controller:  PS4
+GPC Script:  Division.gpc[ 1166 bytes]
+----------------------------------------------------
+00 PS                : X
+01 Share             : Z
+02 Options           : C
+03 R1                : Mouse 3
+04 R2                : Mouse 1
+05 R3                : F
+06 L1                : Q
+07 L2                : Mouse 2
+08 L3                : Shift(left)
+09 Right Analog Left : Mouse Left
+10 Right Analog Right: Mouse Right
+11 Right Analog Up   : Mouse Up
+12 Right Analog Down : Mouse Down
+13 Left Analog Left  : A
+14 Left Analog Right : D
+15 Left Analog Up    : W
+16 Left Analog Down  : S
+17 D-Pad Up          : Up
+18 D-Pad Down        : Down
+19 D-Pad Left        : Left
+20 D-Pad Right       : Right
+21 Triangle          : Space
+22 Circle            : Mouse 4
+23 Cross             : Menu(left)
+24 Square            : Mouse 5
+25 Acc X             : 
+26 Acc Y             : 
+27 Acc Z             : 
+28 Gyro X            : 
+29 Gyro Y            : 
+30 Gyro Z            : 
+31 Touch             : V
+32 Touch X           : 
+33 Touch Y           : 
+----------------------------------------------------
+Smoothness:   [X: 0] [Y: 0] [Y/X: 1.00]
+Acceleration: [X: 0.500] [Y: 0.500] [Y/X: 1.000]
+Sensitivity:  [X: 12.000] [Y: 11.748] [Y/X: 0.979]
+Stickize:     [X: 142] [Y: 142] [Y/X: 1.00]
+Deadzone:     [X: 0] [Y: 0] [Y/X: 1.00]
+Shape:        [ELLIPSE]
+----------------------------------------------------
+*****************************************************/
 
 /*
  * 黑市AK47
@@ -47,6 +91,7 @@
 int shift = 0;
 int shift_mul = 1;
 
+// Anti recoil parameters
 int stable_vertical = 8;
 int stable_adj = 0;
 int stable_left = 2;
@@ -57,7 +102,6 @@ int stable_factor = 100;
 int auto_rapid = 0;
 
 int gun_selete = 0;
-int long_tri = 0;
 
 init
 {
@@ -66,7 +110,7 @@ init
 
 function gun_one()
 {
-	anti_recoil_acr();
+	anti_recoil_ak47();
 }
 
 function gun_two()
@@ -74,17 +118,17 @@ function gun_two()
 	anti_recoil_mp5n();
 }
 
-
 function anti_recoil_testing()
 {
-	// Super 90 setting
-	stable_vertical = 35;
-	stable_adj = 5;
-	stable_left = 0;
-	stable_right = 0;
-	stable_duration = 1500;
-	stable_end = 3000;
-	auto_rapid = 1;
+	//MP5-ST
+	stable_vertical = 8;
+	stable_adj = 4;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 400;
+	stable_factor = 100;
+	stable_end = 3500;
+	auto_rapid = 0;
 	
 	return 0;
 }
@@ -146,12 +190,8 @@ main {
 	
 	if (get_val(PS4_LEFT) && get_ptime(PS4_LEFT) > 500) {
 		combo_run(rxy_still);	
-	} else {
-		//combo_stop(rxy_still);
-	
 	}
 }
-
 
 int rx = 0;
 int ry = 0;
@@ -198,9 +238,24 @@ combo aim_assist
 
 }
 
+function anti_recoil_pp19()
+{
+	// PP-19
+	stable_vertical = 9;
+	stable_adj = 3;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 2000;
+	stable_factor = 64;
+	stable_end = 4200;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
 function anti_recoil_mp5n()
 {
-	stable_vertical = 7;
+	stable_vertical = 8;
 	stable_adj = 4;
 	stable_left = 1;
 	stable_right = 1;
@@ -226,6 +281,7 @@ function anti_recoil_ak47()
 
 function anti_recoil_acr()
 {
+	// Compatible MP5-ST
 	stable_vertical = 19;
 	stable_adj = 4;
 	stable_left = 1;
@@ -234,6 +290,20 @@ function anti_recoil_acr()
 	stable_end = 2200;
 	stable_factor = 100;
 	auto_rapid = 0;
+	
+	return 0;
+}
+
+function anti_recoil_super90()
+{
+	// Super 90 setting
+	stable_vertical = 35;
+	stable_adj = 5;
+	stable_left = 0;
+	stable_right = 0;
+	stable_duration = 1500;
+	stable_end = 3000;
+	auto_rapid = 1;
 	
 	return 0;
 }
