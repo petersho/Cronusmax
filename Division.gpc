@@ -154,11 +154,10 @@ main {
 			if (auto_rapid)
 				combo_stop(rapid_fire);
 			combo_stop(anti_recoil);
-			
+
 			shift = 0;
 			shift_mul = 1;
 		}
-		
 	}
 
 	if (get_val(PS4_LY) <= -80 && get_ptime(PS4_LY) > 1000) {
@@ -181,18 +180,148 @@ main {
 			gun_one();
 		} else if (gun_selete == 1) {
 			gun_two();
-		}		
-			
+		}
 	}
-	
-	
+
 	// D-Pad
-	
 	if (get_val(PS4_LEFT) && get_ptime(PS4_LEFT) > 500) {
 		combo_run(rxy_still);	
 	}
 }
 
+/****************************
+ * Sub Machine Gun
+ ****************************/
+function anti_recoil_pp19()
+{
+	// PP-19
+	stable_vertical = 9;
+	stable_adj = 3;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 2000;
+	stable_factor = 100;
+	stable_end = 4200;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+function anti_recoil_mp5n()
+{
+	stable_vertical = 8;
+	stable_adj = 4;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 400;
+	stable_end = 2500;
+	stable_factor = 100;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+function anti_recoil_acp45()
+{
+	stable_vertical = 8;
+	stable_adj = 1;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 1000;
+	stable_end = 2500;
+	stable_factor = 100;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+/****************************
+ * Assault Rifle
+ ****************************/
+function anti_recoil_ak47()
+{
+	stable_vertical = 18;
+	stable_adj = 5;
+	stable_left = 4;
+	stable_right = 0;
+	stable_duration = 400;
+	stable_factor = 100;
+	auto_rapid = 0;
+	stable_end = 2500;
+	
+	return 0;
+}
+
+function anti_recoil_acr()
+{
+	// Compatible MP5-ST
+	stable_vertical = 19;
+	stable_adj = 4;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 400;
+	stable_end = 2200;
+	stable_factor = 100;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+/*****************************
+ * Shotgun
+ *****************************/
+function anti_recoil_super90()
+{
+	// Super 90 setting
+	stable_vertical = 35;
+	stable_adj = 5;
+	stable_left = 0;
+	stable_right = 0;
+	stable_duration = 1500;
+	stable_end = 3000;
+	stable_factor = 100;
+	auto_rapid = 1;
+	
+	return 0;
+}
+
+/*******************************
+ * Combo Section
+ *******************************/
+combo auto_run
+{
+	set_val(PS4_L3, 100);
+	//wait(100);
+}
+
+int anti_recoil = 0;
+int anti_recoil_left = 0;
+int anti_recoil_right = 0;
+combo anti_recoil
+{ 
+     anti_recoil = get_val(PS4_RY) + (stable_vertical + shift) * stable_factor / 100;
+     if(anti_recoil > 100) 
+     	anti_recoil = 100;
+
+	set_val(PS4_RY, anti_recoil);
+
+	
+	anti_recoil_left = get_val(PS4_RX) - stable_left;
+	if(anti_recoil_left > 100)
+     	anti_recoil_left = 100;
+     
+     set_val(PS4_RX, anti_recoil_left);
+
+     
+     anti_recoil_right = get_val(PS4_RX) + stable_right;
+     
+     if(anti_recoil_right > 100)
+     	anti_recoil_right = 100;
+     set_val(PS4_RX, anti_recoil_right);
+
+}
+
+   
 int rx = 0;
 int ry = 0;
 combo rxy_still
@@ -235,122 +364,8 @@ combo aim_assist
 		else
 			set_val(PS4_RX, aim_assist_rx + 7);
 	}
-
 }
 
-function anti_recoil_pp19()
-{
-	// PP-19
-	stable_vertical = 9;
-	stable_adj = 3;
-	stable_left = 1;
-	stable_right = 1;
-	stable_duration = 2000;
-	stable_factor = 64;
-	stable_end = 4200;
-	auto_rapid = 0;
-	
-	return 0;
-}
-
-function anti_recoil_mp5n()
-{
-	stable_vertical = 8;
-	stable_adj = 4;
-	stable_left = 1;
-	stable_right = 1;
-	stable_duration = 400;
-	stable_factor = 100;
-	auto_rapid = 0;
-	
-	return 0;
-}
-
-function anti_recoil_ak47()
-{
-	stable_vertical = 18;
-	stable_adj = 5;
-	stable_left = 4;
-	stable_right = 0;
-	stable_duration = 400;
-	stable_factor = 100;
-	auto_rapid = 0;
-	
-	return 0;
-}
-
-function anti_recoil_acr()
-{
-	// Compatible MP5-ST
-	stable_vertical = 19;
-	stable_adj = 4;
-	stable_left = 1;
-	stable_right = 1;
-	stable_duration = 400;
-	stable_end = 2200;
-	stable_factor = 100;
-	auto_rapid = 0;
-	
-	return 0;
-}
-
-function anti_recoil_super90()
-{
-	// Super 90 setting
-	stable_vertical = 35;
-	stable_adj = 5;
-	stable_left = 0;
-	stable_right = 0;
-	stable_duration = 1500;
-	stable_end = 3000;
-	auto_rapid = 1;
-	
-	return 0;
-}
-
-function anti_recoil_acp45()
-{
-	stable_vertical = 8;
-	stable_adj = 1;
-	stable_left = 1;
-	stable_right = 1;
-	stable_duration = 1000;
-	
-	return 0;
-}
-
-combo auto_run
-{
-	set_val(PS4_L3, 100);
-	//wait(100);
-}
-
-int anti_recoil = 0;
-int anti_recoil_left = 0;
-int anti_recoil_right = 0;
-combo anti_recoil
-{ 
-     anti_recoil = get_val(PS4_RY) + (stable_vertical + shift) * stable_factor / 100;
-     if(anti_recoil > 100) 
-     	anti_recoil = 100;
-
-	set_val(PS4_RY, anti_recoil);
-
-	
-	anti_recoil_left = get_val(PS4_RX) - stable_left;
-	if(anti_recoil_left > 100)
-     	anti_recoil_left = 100;
-     
-     set_val(PS4_RX, anti_recoil_left);
-
-     
-     anti_recoil_right = get_val(PS4_RX) + stable_right;
-     
-     if(anti_recoil_right > 100)
-     	anti_recoil_right = 100;
-     set_val(PS4_RX, anti_recoil_right);
-
-} 
 /*
 combo anti_recoil
 {
