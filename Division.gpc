@@ -1,0 +1,322 @@
+/* *
+* GPC SCRIPT
+*
+*  GPC is a scripting language with C-like syntax.
+*  To learn more access GPC Language Reference on Help menu.
+* *********************************************************** */
+
+
+/*
+ * 黑市AK47
+ * ak47_stable_vertical = 19;
+ * ak47_stable_adj = 5;
+ * ak47_stable_left = 4;
+ * ak47_stable_right = 0;
+ * ak47_stable_duration = 400;
+ */
+ 
+/* Vector 45 ACP
+ * 
+ * acp45_stable_vertical = 8;
+ * acp45_stable_adj = 1;
+ * acp45_stable_left = 1;
+ * acp45__stable_right = 1;
+ * acp45_stable_duration = 1000;
+ */
+ 
+ /*
+ * 海軍MP5
+ *
+ * mp5_stable_vertical = 7;
+ * mp5_stable_adj = 4;
+ * mp45_stable_left = 1;
+ * mp45__stable_right = 1;
+ * mp5_stable_duration = 400;
+ */
+
+/*
+ * 警用M4
+ *
+ * m4_stable_vertical = 7;
+ * m4_stable_adj = 4;
+ * m4_stable_left = 1;
+ * m4__stable_right = 1;
+ * m4_stable_duration = 400;
+ */
+ 
+int shift = 0;
+int shift_mul = 1;
+
+int stable_vertical = 8;
+int stable_adj = 0;
+int stable_left = 2;
+int stable_right = 2;
+int stable_duration = 1000;
+int stable_end = 2500;
+int stable_factor = 100;
+int auto_rapid = 0;
+
+int gun_selete = 0;
+int long_tri = 0;
+
+init
+{
+	gun_selete = 0;
+}
+
+function gun_one()
+{
+	anti_recoil_acr();
+}
+
+function gun_two()
+{
+	anti_recoil_mp5n();
+}
+
+
+function anti_recoil_testing()
+{
+	// Super 90 setting
+	stable_vertical = 35;
+	stable_adj = 5;
+	stable_left = 0;
+	stable_right = 0;
+	stable_duration = 1500;
+	stable_end = 3000;
+	auto_rapid = 1;
+	
+	return 0;
+}
+
+main {
+	set_val(TRACE_1, gun_selete);
+
+	if (get_val(PS4_L2)) {
+		combo_run(aim_assist);
+		if (get_val(PS4_R2)) {
+			if((get_ptime(PS4_R2) % stable_duration) == 0) {
+						shift = stable_adj * shift_mul;
+						shift_mul++;
+			}
+			if (get_ptime(PS4_R2) < stable_end) {
+				if (auto_rapid)
+					combo_run(rapid_fire);
+
+				combo_run(anti_recoil);
+				combo_stop(auto_run);
+			}
+		} else {
+			if (auto_rapid)
+				combo_stop(rapid_fire);
+			combo_stop(anti_recoil);
+			
+			shift = 0;
+			shift_mul = 1;
+		}
+		
+	}
+
+	if (get_val(PS4_LY) <= -80 && get_ptime(PS4_LY) > 1000) {
+		combo_run(auto_run);
+	} else {
+		combo_stop(auto_run);
+	}
+	
+	// Switch gun, Switch anti recoil
+	if (get_val(PS4_L3) && get_ptime(PS4_L3) > 1000) {
+		gun_one();
+		gun_selete = 0;
+	}
+	
+	if (event_press(PS4_TRIANGLE)) {
+		gun_selete++;
+		gun_selete = gun_selete % 2;
+		
+		if (gun_selete == 0) {
+			gun_one();
+		} else if (gun_selete == 1) {
+			gun_two();
+		}		
+			
+	}
+	
+	
+	// D-Pad
+	
+	if (get_val(PS4_LEFT) && get_ptime(PS4_LEFT) > 500) {
+		combo_run(rxy_still);	
+	} else {
+		//combo_stop(rxy_still);
+	
+	}
+}
+
+
+int rx = 0;
+int ry = 0;
+combo rxy_still
+{
+	rx = get_val(PS4_LX);
+	ry = get_val(PS4_LY);
+
+	set_val(PS4_RX, rx);
+	set_val(PS4_RY, ry);
+
+	wait(200);
+}
+
+combo rapid_fire
+{
+	
+	set_val(PS4_R2, 100);
+	wait(30);
+	set_val(PS4_R2, 0);
+	wait(30);
+	
+
+}
+
+int aim_assist_rx = 0;
+combo aim_assist
+{
+	aim_assist_rx = get_val(PS4_RX);
+	
+	if (get_val(PS4_LX) < -90) {
+		if (get_ptime(PS4_LX) > 150)
+			set_val(PS4_RX, aim_assist_rx + 15);
+		else
+			set_val(PS4_RX, aim_assist_rx + 7);
+	}
+		
+	if (get_val(PS4_LX) > 90) {
+		if (get_ptime(PS4_LX) > 150)
+			set_val(PS4_RX, aim_assist_rx - 15);
+		else
+			set_val(PS4_RX, aim_assist_rx + 7);
+	}
+
+}
+
+function anti_recoil_mp5n()
+{
+	stable_vertical = 7;
+	stable_adj = 4;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 400;
+	stable_factor = 100;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+function anti_recoil_ak47()
+{
+	stable_vertical = 18;
+	stable_adj = 5;
+	stable_left = 4;
+	stable_right = 0;
+	stable_duration = 400;
+	stable_factor = 100;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+function anti_recoil_acr()
+{
+	stable_vertical = 19;
+	stable_adj = 4;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 400;
+	stable_end = 2200;
+	stable_factor = 100;
+	auto_rapid = 0;
+	
+	return 0;
+}
+
+function anti_recoil_acp45()
+{
+	stable_vertical = 8;
+	stable_adj = 1;
+	stable_left = 1;
+	stable_right = 1;
+	stable_duration = 1000;
+	
+	return 0;
+}
+
+combo auto_run
+{
+	set_val(PS4_L3, 100);
+	//wait(100);
+}
+
+int anti_recoil = 0;
+int anti_recoil_left = 0;
+int anti_recoil_right = 0;
+combo anti_recoil
+{ 
+     anti_recoil = get_val(PS4_RY) + (stable_vertical + shift) * stable_factor / 100;
+     if(anti_recoil > 100) 
+     	anti_recoil = 100;
+
+	set_val(PS4_RY, anti_recoil);
+
+	
+	anti_recoil_left = get_val(PS4_RX) - stable_left;
+	if(anti_recoil_left > 100)
+     	anti_recoil_left = 100;
+     
+     set_val(PS4_RX, anti_recoil_left);
+
+     
+     anti_recoil_right = get_val(PS4_RX) + stable_right;
+     
+     if(anti_recoil_right > 100)
+     	anti_recoil_right = 100;
+     set_val(PS4_RX, anti_recoil_right);
+
+} 
+/*
+combo anti_recoil
+{
+	anti_v = get_val(PS4_RY);
+	
+	if (anti_v)
+	
+	anti_h = get_val(PS4_RX);
+	
+	//set_val(PS4_RY, 18 + shift);
+	set_val(PS4_RY, anti_v);
+	//set_val(PS4_RX, -3);
+	set_val(PS4_RX, anti_h - 3);
+	wait(50);
+}
+*/
+
+/*
+int adj = 0;
+int curr = 0;
+combo aim_assist
+{
+
+
+	if (get_val(PS4_LX) < -80) {
+		adj = 15;
+		set_val(PS4_RX, adj);
+	} else if(get_val(PS4_LX) > 80) {
+		adj = -15;
+		set_val(PS4_RX, adj);
+	}
+
+	set_val(PS4_L2, 100);
+	wait(400);
+	set_val(PS4_L2, 0);
+	set_val(PS4_R2, 0);
+	wait(75);
+}
+*/
